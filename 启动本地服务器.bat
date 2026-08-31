@@ -1,8 +1,6 @@
 @echo off
-cd /d "%~dp0"
-start "体育档案网页" http://localhost:8000/manage.html
-if exist "C:\Users\User\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" (
-  "C:\Users\User\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" -m http.server 8000
-) else (
-  py -m http.server 8000
-)
+echo Sports archive server is running.
+echo Open this address in your browser:
+echo http://localhost:8000/manage.html
+echo Keep this window open while using the archive.
+"C:\Users\User\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" -m http.server 8000
