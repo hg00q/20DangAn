@@ -3,48 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>体育课程档案 · 试用版</title>
+  <title>体育档案查看</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <aside class="sidebar">
-    <div class="brand"><span class="brand-mark">体</span><div><strong>体育课程档案</strong><small>教师试用版 · 本机保存</small></div></div>
-    <nav>
-      <button class="nav active" data-view="dashboard">概览</button>
-      <button class="nav" data-view="students">学生档案</button>
-      <button class="nav" data-view="import">导入成绩</button>
-      <button class="nav" data-view="settings">课程与规则</button>
-      <button class="nav" data-view="publish">手机查看发布</button>
-    </nav>
-    <div class="side-note">数据保存在此浏览器。<br>请定期导出备份。</div>
-  </aside>
-  <main>
-    <header><div><p class="eyebrow">2026—2027 学年</p><h1 id="page-title">概览</h1></div><div class="header-actions"><button class="ghost" id="export-backup">导出备份</button><button class="primary" id="add-student">+ 新建学生</button></div></header>
-
-    <section class="view active" id="dashboard">
-      <div class="notice">这是本机试用版：录入与修改均在电脑完成；“手机查看发布”仅生成只读、加密的查看数据。</div>
-      <div class="kpis"><article><span>在校学生</span><strong id="kpi-active">0</strong><small>含初中与高中</small></article><article><span>已录入本学期成绩</span><strong id="kpi-score">0</strong><small>至少一项成绩</small></article><article><span>初三待关注</span><strong id="kpi-alert">0</strong><small>总评低于 75%</small></article><article><span>毕业档案</span><strong id="kpi-grad">0</strong><small>可归档或删除</small></article></div>
-      <div class="two-col"><section class="card"><div class="card-head"><h2>近期学生</h2><button class="text-link" data-goto="students">查看全部</button></div><div id="recent-list" class="compact-list"></div></section><section class="card"><div class="card-head"><h2>使用提示</h2></div><ol class="tips"><li>先在“课程与规则”中调整项目选项。</li><li>在“导入成绩”粘贴 Word/Excel 表格。</li><li>同年级、同班、同名自动匹配；其余项目会提示确认。</li><li>完成录入后再发布手机查看数据。</li></ol></section></div>
-    </section>
-
-    <section class="view" id="students">
-      <div class="toolbar"><input id="student-search" placeholder="搜索姓名、班级或年级" /><select id="status-filter"><option value="active">在校学生</option><option value="graduated">毕业档案</option><option value="all">全部</option></select><button class="secondary" id="batch-promote">学年升级</button></div>
-      <div class="card table-card"><table><thead><tr><th>学生</th><th>年级 / 班级</th><th>课程类型</th><th>当前项目</th><th>本学期总评</th><th>状态</th><th></th></tr></thead><tbody id="student-table"></tbody></table></div>
-    </section>
-
-    <section class="view" id="import">
-      <div class="split"><section class="card"><h2>从 Word / Excel 粘贴</h2><p class="muted">复制包含表头的表格后粘贴。识别“姓名、班级、年级”及常用体育项目列；列顺序不必一致。</p><textarea id="paste-area" placeholder="例如：&#10;姓名　班级　年级　800米跑　仰卧起坐　篮球　体测统测　健康知识&#10;张三　1班　初三　230　45　14　8　9"></textarea><div class="actions"><button class="primary" id="preview-import">识别并预览</button><button class="ghost" id="clear-paste">清空</button></div></section><section class="card"><h2>识别结果</h2><div id="import-preview" class="empty">粘贴内容后点击“识别并预览”。</div><div id="import-actions" class="actions hidden"><button class="primary" id="confirm-import">确认写入档案</button></div></section></div>
-    </section>
-
-    <section class="view" id="settings">
-      <div class="two-col"><section class="card"><div class="card-head"><h2>课程与选项</h2><button id="save-settings" class="primary">保存设置</button></div><p class="muted">用逗号分隔项目。学生可在档案页随时换项，历史成绩不会被覆盖。</p><label>初中中考类项目<textarea id="junior-options"></textarea></label><label>高中选修项目<textarea id="senior-options"></textarea></label></section><section class="card"><h2>试用版计分规则</h2><p class="muted">当前采用现场项目 8 + 8 + 8 + 6 分，过程性考核 20 分的试用结构。取得正式标准后，可在正式版改为逐档赋分。</p><div class="rule-grid"><label>现场总分<input id="site-max" type="number" min="0" max="100" /></label><label>过程性总分<input id="process-max" type="number" min="0" max="100" /></label><label>体育总分<input id="total-max" type="number" min="0" max="100" /></label></div><hr><h3>学年管理</h3><p class="muted">升级操作会将初一→初二、初二→初三；初三学生转入毕业档案。高中学生仅升年级，不参与中考计分。</p><button class="secondary" id="promote-settings">执行学年升级</button></section></div>
-    </section>
-
-    <section class="view" id="publish">
-      <div class="two-col"><section class="card"><h2>手机查看版</h2><p class="muted">发布内容只包含姓名、年级、班级、选项、总评和教师评价；原始导入内容与备份不会上传。</p><label>查看密码<input id="publish-password" type="password" placeholder="至少 8 位；仅您自己保存" /></label><div class="actions"><button class="primary" id="make-view-data">生成加密查看文件</button></div><div id="publish-result" class="empty">生成后可下载 <code>viewer-data.enc</code>，并上传到 GitHub Pages 仓库。</div></section><section class="card"><h2>GitHub 免费发布步骤</h2><ol class="steps"><li>创建一个公开仓库，例如 <code>sports-view</code>。</li><li>上传本文件夹中的 <code>viewer.html</code>、<code>style.css</code>、<code>viewer.js</code>。</li><li>每次电脑端更新后，把新生成的 <code>viewer-data.enc</code> 覆盖上传。</li><li>在仓库 Settings → Pages 中开启网站；手机打开得到的网址后输入查看密码。</li></ol><p class="warn">公开仓库只能放网页代码和加密后的查看文件，不能上传本机备份、明文成绩表或密码。</p></section></div>
-    </section>
+  <main style="margin:0;max-width:960px">
+    <header><div><p class="eyebrow">只读查看</p><h1>体育课程档案</h1></div></header>
+    <section class="card" id="unlock"><h2>输入查看密码</h2><p class="muted">数据为加密查看快照，仅供教师本人使用。</p><input id="password" type="password" placeholder="查看密码" /><div class="actions"><button class="primary" id="unlock-btn">打开档案</button></div><p id="unlock-msg" class="muted"></p></section>
+    <section id="viewer" class="hidden"><div class="toolbar"><input id="q" placeholder="搜索姓名、班级或年级" /></div><div class="card table-card"><table><thead><tr><th>姓名</th><th>年级 / 班级</th><th>课程</th><th>项目</th><th>总评</th><th>评价</th></tr></thead><tbody id="rows"></tbody></table></div></section>
   </main>
-  <dialog id="student-dialog"><form method="dialog" id="student-form"><div class="dialog-head"><h2 id="dialog-title">新建学生</h2><button class="icon" value="cancel">×</button></div><input type="hidden" id="student-id" /><div class="form-grid"><label>姓名<input id="f-name" required /></label><label>年级<select id="f-grade"><option>初一</option><option>初二</option><option>初三</option><option>高一</option><option>高二</option><option>高三</option></select></label><label>班级<input id="f-class" placeholder="如：1班" required /></label><label>课程类型<select id="f-track"><option value="junior">初中中考体育</option><option value="senior">高中体育选修</option></select></label><label>当前选项<select id="f-event"></select></label><label>状态<select id="f-status"><option value="active">在校</option><option value="graduated">毕业</option></select></label></div><h3>本学期成绩</h3><div class="form-grid scores"><label>项目一得分（8）<input id="s1" type="number" min="0" max="8" step="0.1" /></label><label>项目二得分（8）<input id="s2" type="number" min="0" max="8" step="0.1" /></label><label>项目三得分（8）<input id="s3" type="number" min="0" max="8" step="0.1" /></label><label>项目四得分（6）<input id="s4" type="number" min="0" max="6" step="0.1" /></label><label>体测统测（10）<input id="p1" type="number" min="0" max="10" step="0.1" /></label><label>健康知识（10）<input id="p2" type="number" min="0" max="10" step="0.1" /></label></div><label>教师评价<textarea id="f-note" placeholder="可选填写"></textarea></label><div class="actions dialog-actions"><button class="ghost" value="cancel">取消</button><button class="primary" id="save-student" value="default">保存档案</button></div></form></dialog>
-  <script src="app.js"></script>
+  <script src="viewer.js"></script>
 </body>
 </html>
