@@ -3,7 +3,16 @@ const defaults={settings:{junior:'篮球、足球、排球、乒乓球、羽毛�
   {id:'s1',name:'李然',grade:'初三',className:'1班',track:'junior',event:'篮球',status:'active',scores:[6.4,6.8,6.2,4.7,8,9],note:'篮球项目动作稳定，建议持续提升耐力项目。',updated:'2026-08-31'},
   {id:'s2',name:'王昕',grade:'初三',className:'1班',track:'junior',event:'羽毛球',status:'active',scores:[7.2,6.5,7,5.1,9,8],note:'整体表现良好，注意保持专项训练。',updated:'2026-08-31'},
   {id:'s3',name:'陈子涵',grade:'高一',className:'2班',track:'senior',event:'排球',status:'active',scores:[null,null,null,null,8,null],note:'平时课参与积极。',updated:'2026-08-31'}]};
+const rosterSeed=['刘昱檀','李易航','董子铭','高翌宸','黄钰涵','杨梓航','李嘉毅','王思达','魏廷谦','武泽宇','李之薛','张子木','王子谦','赵庆晔','储翊宸','杨斯凯','尼兆宁','吴天骐','赵明朔','王俊然','宋宇尧','马秋皓'];
 let state=load(),editing=null,importRows=[];
+function seedRoster(){
+  let added=0;
+  rosterSeed.forEach(name=>{
+    if(state.students.some(s=>s.grade==='初一'&&s.className==='2班'&&s.name===name))return;
+    state.students.push({id:crypto.randomUUID(),name,grade:'初一',className:'2班',track:'junior',event:options('junior')[0]||'',status:'active',scores:[null,null,null,null,null,null],note:'',updated:new Date().toISOString().slice(0,10)}); added++;
+  });
+  if(added)localStorage.setItem(KEY,JSON.stringify(state));
+}
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||structuredClone(defaults)}catch{return structuredClone(defaults)}}
 function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -37,4 +46,5 @@ $('#confirm-import').onclick=()=>{if(!importRows.length)return;importRows.forEac
 $('#export-backup').onclick=()=>download('体育档案本机备份.json',JSON.stringify(state,null,2),'application/json');
 const enc=new TextEncoder();function b64(u){return btoa(String.fromCharCode(...u))}function download(name,data,type){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();URL.revokeObjectURL(a.href)}
 $('#make-view-data').onclick=async()=>{let pass=$('#publish-password').value;if(pass.length<8){alert('请设置至少 8 位的查看密码。');return}if(!crypto?.subtle){alert('请使用“启动本地服务器.bat”打开本页面后再生成加密文件。');return}let snapshot=state.students.filter(s=>s.status==='active').map(s=>({name:s.name,grade:s.grade,className:s.className,trackName:trackName(s),event:s.event,total:total(s),note:s.note}));let salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),base=await crypto.subtle.importKey('raw',enc.encode(pass),'PBKDF2',false,['deriveKey']),key=await crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:120000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt']),encrypted=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(JSON.stringify(snapshot))));download('viewer-data.enc',JSON.stringify({v:1,s:b64(salt),i:b64(iv),d:b64(encrypted)}),'application/json');$('#publish-result').innerHTML='<strong>已生成加密查看文件。</strong><br>请将下载的 <code>viewer-data.enc</code> 上传并覆盖 GitHub Pages 仓库中的同名文件；手机刷新网页后即可看到最新数据。'};
+seedRoster();
 render();
