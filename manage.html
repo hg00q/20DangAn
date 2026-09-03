@@ -19,7 +19,7 @@
     <div class="side-note">数据保存在此浏览器。<br>请定期导出备份。</div>
   </aside>
   <main>
-    <header><div><p class="eyebrow">2026—2027 学年</p><h1 id="page-title">概览</h1></div><div class="header-actions"><button class="ghost" id="export-backup">导出备份</button><button class="primary" id="add-student">+ 新建学生</button></div></header>
+    <header><div><p class="eyebrow">2026—2027 学年</p><h1 id="page-title">概览</h1></div></header>
 
     <section class="view active" id="dashboard">
       <div class="notice">这是本机试用版：录入与修改均在电脑完成；“手机查看发布”仅生成只读、加密的查看数据。</div>
@@ -28,7 +28,7 @@
     </section>
 
     <section class="view" id="students">
-      <div class="toolbar"><input id="student-search" placeholder="搜索姓名、班级或年级" /><select id="grade-filter"><option value="all">全部年级</option><option>初一</option><option>初二</option><option>初三</option><option>高一</option><option>高二</option><option>高三</option></select><select id="class-filter"><option value="all">全部班级</option><option>1班</option><option>2班</option><option>3班</option><option>4班</option><option>5班</option><option>6班</option><option>7班</option><option>8班</option><option>9班</option><option>10班</option></select><select id="status-filter"><option value="active">在校学生</option><option value="graduated">毕业档案</option><option value="all">全部</option></select></div>
+      <div class="toolbar"><input id="student-search" placeholder="搜索姓名、班级或年级" /><select id="grade-filter"><option value="all">全部年级</option><option>初一</option><option>初二</option><option>初三</option><option>高一</option><option>高二</option><option>高三</option></select><select id="class-filter"><option value="all">全部班级</option><option>1班</option><option>2班</option><option>3班</option><option>4班</option><option>5班</option><option>6班</option><option>7班</option><option>8班</option><option>9班</option><option>10班</option></select><select id="status-filter"><option value="active">在校学生</option><option value="graduated">毕业档案</option><option value="all">全部</option></select><button class="ghost" id="export-backup">导出备份</button><button class="primary" id="add-student">+ 新建学生</button></div>
       <div class="card table-card"><table><thead><tr><th>学生</th><th>年级 / 班级</th><th>课程类型</th><th>当前项目</th><th>本学期总评</th><th>状态</th><th></th></tr></thead><tbody id="student-table"></tbody></table><div id="student-pagination" class="actions"></div></div>
     </section>
 
