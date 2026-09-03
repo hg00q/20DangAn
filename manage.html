@@ -28,7 +28,7 @@
     </section>
 
     <section class="view" id="students">
-      <div class="toolbar"><input id="student-search" placeholder="搜索姓名、班级或年级" /><select id="grade-filter"><option value="all">全部年级</option></select><select id="class-filter"><option value="all">全部班级</option></select><select id="status-filter"><option value="active">在校学生</option><option value="graduated">毕业档案</option><option value="all">全部</option></select></div>
+      <div class="toolbar"><input id="student-search" placeholder="搜索姓名、班级或年级" /><select id="grade-filter"><option value="all">全部年级</option><option>初一</option><option>初二</option><option>初三</option><option>高一</option><option>高二</option><option>高三</option></select><select id="class-filter"><option value="all">全部班级</option><option>1班</option><option>2班</option><option>3班</option><option>4班</option><option>5班</option><option>6班</option><option>7班</option><option>8班</option><option>9班</option><option>10班</option></select><select id="status-filter"><option value="active">在校学生</option><option value="graduated">毕业档案</option><option value="all">全部</option></select></div>
       <div class="card table-card"><table><thead><tr><th>学生</th><th>年级 / 班级</th><th>课程类型</th><th>当前项目</th><th>本学期总评</th><th>状态</th><th></th></tr></thead><tbody id="student-table"></tbody></table></div>
     </section>
 
@@ -45,6 +45,6 @@
     </section>
   </main>
   <dialog id="student-dialog"><form id="student-form"><div class="dialog-head"><h2 id="dialog-title">新建学生</h2><button class="icon close-student-dialog" type="button" aria-label="关闭">×</button></div><input type="hidden" id="student-id" /><div class="form-grid"><label>姓名<input id="f-name" required /></label><label>年级<select id="f-grade"><option>初一</option><option>初二</option><option>初三</option><option>高一</option><option>高二</option><option>高三</option></select></label><label>班级<input id="f-class" placeholder="如：1班" required /></label><label>课程类型<select id="f-track"><option value="junior">初中中考体育</option><option value="senior">高中体育选修</option></select></label><label>当前选项<select id="f-event"></select></label><label>状态<select id="f-status"><option value="active">在校</option><option value="graduated">毕业</option></select></label></div><h3>本学期成绩</h3><div class="form-grid scores"><label>项目一得分（8）<input id="s1" type="number" min="0" max="8" step="0.1" /></label><label>项目二得分（8）<input id="s2" type="number" min="0" max="8" step="0.1" /></label><label>项目三得分（8）<input id="s3" type="number" min="0" max="8" step="0.1" /></label><label>项目四得分（6）<input id="s4" type="number" min="0" max="6" step="0.1" /></label><label>体测统测（10）<input id="p1" type="number" min="0" max="10" step="0.1" /></label><label>健康知识（10）<input id="p2" type="number" min="0" max="10" step="0.1" /></label></div><label>教师评价<textarea id="f-note" placeholder="可选填写"></textarea></label><div class="actions dialog-actions"><button class="ghost close-student-dialog" type="button">取消</button><button class="primary" id="save-student" type="submit">保存档案</button></div></form></dialog>
-  <script src="app.js"></script>
+  <script src="app.js?v=20260903-2"></script>
 </body>
 </html>
