@@ -11,7 +11,7 @@ Write-Host ''
 Start-Process "http://localhost:$port/manage.html"
 
 if (Get-Command py -ErrorAction SilentlyContinue) {
-  & py -m http.server $port
+  & py server.py
 } else {
-  & 'C:\Users\User\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' -m http.server $port
+  & 'C:\Users\User\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe' server.py
 }

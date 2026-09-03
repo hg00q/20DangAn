@@ -14,9 +14,12 @@ function seedRoster(){
   });
   if(added||changed)localStorage.setItem(KEY,JSON.stringify(state));
 }
-function load(){try{const data=JSON.parse(localStorage.getItem(KEY))||structuredClone(defaults);if(!Array.isArray(data.students))data.students=[];data.students.forEach(s=>{if(s.status==='在校'||s.status==='active'||!s.status)s.status='active';else if(s.status==='毕业')s.status='graduated';if(!Array.isArray(s.scores))s.scores=[null,null,null,null,null,null]});return data}catch{return structuredClone(defaults)}}
+function load(){try{const data=JSON.parse(localStorage.getItem(KEY))||structuredClone(defaults);return normalize(data)}catch{return structuredClone(defaults)}}
+function normalize(data){if(!Array.isArray(data.students))data.students=[];data.students.forEach(s=>{if(s.status==='在校'||s.status==='active'||!s.status)s.status='active';else if(s.status==='毕业')s.status='graduated';if(!Array.isArray(s.scores))s.scores=[null,null,null,null,null,null]});return data}
+async function syncFromDataFile(){try{const response=await fetch('/api/state',{cache:'no-store'});if(!response.ok)return;const remote=normalize(await response.json());if(remote.students.length||remote.settings){state=remote;localStorage.setItem(KEY,JSON.stringify(state))}else{await writeDataFile()};render()}catch{} }
+async function writeDataFile(){try{await fetch('/api/state',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(state)})}catch{} }
 function statusValue(s){const v=String(s?.status??'active').trim();return v==='毕业'||v==='graduated'?'graduated':'active'}
-function save(){localStorage.setItem(KEY,JSON.stringify(state));render()}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));writeDataFile();render()}
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 function isJunior(s){return s.track==='junior'}
 function total(s){if(!isJunior(s))return s.scores.filter(x=>x!=null).length?Math.round((s.scores.filter(x=>x!=null).reduce((a,b)=>a+b,0)/s.scores.filter(x=>x!=null).length)*10)/10:null;let a=s.scores.slice(0,4),p=s.scores.slice(4,6);if([...a,...p].every(x=>x==null))return null;return Math.min(state.settings.totalMax,[...a,...p].reduce((x,y)=>x+(Number(y)||0),0))}
@@ -51,3 +54,4 @@ const enc=new TextEncoder();function b64(u){return btoa(String.fromCharCode(...u
 $('#make-view-data').onclick=async()=>{let pass=$('#publish-password').value;if(pass.length<8){alert('请设置至少 8 位的查看密码。');return}if(!crypto?.subtle){alert('请使用“启动本地服务器.bat”打开本页面后再生成加密文件。');return}let snapshot=state.students.filter(s=>s.status==='active').map(s=>({name:s.name,grade:s.grade,className:s.className,trackName:trackName(s),event:s.event,total:total(s),note:s.note}));let salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),base=await crypto.subtle.importKey('raw',enc.encode(pass),'PBKDF2',false,['deriveKey']),key=await crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:120000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt']),encrypted=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,enc.encode(JSON.stringify(snapshot))));download('viewer-data.enc',JSON.stringify({v:1,s:b64(salt),i:b64(iv),d:b64(encrypted)}),'application/json');$('#publish-result').innerHTML='<strong>已生成加密查看文件。</strong><br>请将下载的 <code>viewer-data.enc</code> 上传并覆盖 GitHub Pages 仓库中的同名文件；手机刷新网页后即可看到最新数据。'};
 seedRoster();
 render();
+syncFromDataFile();
