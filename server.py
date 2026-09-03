@@ -1,6 +1,7 @@
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 import json
+import sys
 
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / 'data'
@@ -27,5 +28,6 @@ class Handler(SimpleHTTPRequestHandler):
 
 DATA_DIR.mkdir(exist_ok=True)
 if not DATA_FILE.exists(): DATA_FILE.write_text('{}', encoding='utf-8')
-print('体育档案服务器已启动，数据统一保存于 data/students.json')
-ThreadingHTTPServer(('127.0.0.1', 8000), Handler).serve_forever()
+port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
+print(f'体育档案服务器已启动：http://localhost:{port}，数据统一保存于 data/students.json')
+ThreadingHTTPServer(('127.0.0.1', port), Handler).serve_forever()
