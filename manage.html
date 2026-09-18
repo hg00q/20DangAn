@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>体育课程档案 · 试用版</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="attendance.css?v=20260917-2" />
+  <link rel="stylesheet" href="rules.css?v=20260918-1" />
 </head>
 <body>
   <aside class="sidebar">
@@ -12,6 +14,7 @@
     <nav>
       <button class="nav active" data-view="dashboard">概览</button>
       <button class="nav" data-view="students">学生档案</button>
+      <button class="nav" data-view="attendance">考勤输入</button>
       <button class="nav" data-view="import">导入成绩</button>
       <button class="nav" data-view="settings">课程与规则</button>
       <button class="nav" data-view="publish">手机查看发布</button>
@@ -29,7 +32,17 @@
 
     <section class="view" id="students">
       <div class="toolbar"><input id="student-search" placeholder="搜索姓名、班级或年级" /><select id="grade-filter"><option value="all">全部年级</option><option>初一</option><option>初二</option><option>初三</option><option>高一</option><option>高二</option><option>高三</option></select><select id="class-filter"><option value="all">全部班级</option><option>1班</option><option>2班</option><option>3班</option><option>4班</option><option>5班</option><option>6班</option><option>7班</option><option>8班</option><option>9班</option><option>10班</option></select><select id="status-filter"><option value="active">在校学生</option><option value="graduated">毕业档案</option><option value="all">全部</option></select><button class="ghost" id="export-backup">导出备份</button><button class="primary" id="add-student">+ 新建学生</button></div>
-      <div class="card table-card"><table><thead><tr><th>学生</th><th>年级 / 班级</th><th>课程类型</th><th>当前项目</th><th>本学期总评</th><th>状态</th><th></th></tr></thead><tbody id="student-table"></tbody></table><div id="student-pagination" class="actions"></div></div>
+      <div class="card table-card"><table><thead><tr><th>学生</th><th>年级 / 班级</th><th>课程类型</th><th>当前项目</th><th>本学期总评</th><th>考勤比例</th><th>状态</th><th></th></tr></thead><tbody id="student-table"></tbody></table><div id="student-pagination" class="actions"></div></div>
+    </section>
+
+    <section class="view" id="attendance">
+      <div class="attendance-toolbar">
+        <div class="week-nav"><button class="ghost icon-button" id="attendance-prev" title="上一周" aria-label="上一周">‹</button><button class="ghost" id="attendance-today">回到本周</button><button class="ghost icon-button" id="attendance-next" title="下一周" aria-label="下一周">›</button><strong id="attendance-week-label"></strong></div>
+        <div class="attendance-filters"><select id="attendance-grade"></select><select id="attendance-class"></select><button class="primary" id="attendance-finish">完成并进入下一周</button></div>
+      </div>
+      <div class="attendance-guide"><strong>考勤说明</strong><span><b class="guide-mark absent">⭕</b> 旷课</span><span><b class="guide-mark fail">×</b> 本项未完成，记迟到 1 次</span><span><b class="guide-mark pass">✓</b> 已完成</span><span>迟到 2 次折算旷课 1 次</span><span>空白项目不参与统计</span><small>点击已选标记可取消；练习选择 × 或 ✓ 时自动记为到课；所有操作即时保存。</small></div>
+      <div class="card table-card attendance-card"><table class="attendance-table"><thead id="attendance-head"></thead><tbody id="attendance-body"></tbody></table></div>
+      <div id="attendance-summary" class="attendance-summary"></div>
     </section>
 
     <section class="view" id="import">
@@ -37,14 +50,20 @@
     </section>
 
     <section class="view" id="settings">
-      <div class="two-col"><section class="card"><div class="card-head"><h2>课程与选项</h2><button id="save-settings" class="primary">保存设置</button></div><p class="muted">用逗号分隔项目。学生可在档案页随时换项，历史成绩不会被覆盖。</p><label>初中中考类项目<textarea id="junior-options"></textarea></label><label>高中选修项目<textarea id="senior-options"></textarea></label></section><section class="card"><h2>试用版计分规则</h2><p class="muted">当前采用现场项目 8 + 8 + 8 + 6 分，过程性考核 20 分的试用结构。取得正式标准后，可在正式版改为逐档赋分。</p><div class="rule-grid"><label>现场总分<input id="site-max" type="number" min="0" max="100" /></label><label>过程性总分<input id="process-max" type="number" min="0" max="100" /></label><label>体育总分<input id="total-max" type="number" min="0" max="100" /></label></div><hr><h3>学年管理</h3><p class="muted">升级操作会将初一→初二、初二→初三；初三学生转入毕业档案。高中学生仅升年级，不参与中考计分。</p><button class="secondary" id="promote-settings">执行学年升级</button></section></div>
+      <div class="rule-summary"><article><span>体育总分</span><strong>50</strong><small>过程性考核 + 现场考试</small></article><article><span>过程性考核</span><strong>20</strong><small>按学校正式要求录入</small></article><article><span>现场考试</span><strong>30</strong><small>8 + 8 + 8 + 6</small></article><article><span>现场项目</span><strong>4</strong><small>1项必考 + 3项选考</small></article></div>
+      <section class="card rule-section"><div class="card-head"><div><h2>初三现场考试项目设置</h2><p class="muted">素质项目 I 为必考；其余三类在报名时各选 1 项。</p></div><span class="rule-total">满分 30 分</span></div><div id="exam-category-grid" class="exam-category-grid"></div></section>
+      <section class="card rule-section"><div class="rule-title"><div><h2>素质项目 I、II 评分表</h2><p class="muted">计时项目达到或优于表中成绩取得相应分值；距离、次数项目达到或超过表中标准取得相应分值。</p></div></div><div class="score-table-wrap"><table class="score-table" id="quality-score-table"></table></div></section>
+      <section class="card rule-section"><div class="rule-title"><div><h2>运动能力 I 及 100 米游泳评分表</h2><p class="muted">足球、篮球、排球按用时计分；乒乓球、羽毛球按完成数量计分；游泳按用时计分。</p></div></div><div class="score-table-wrap"><table class="score-table" id="ability-score-table"></table></div><div class="rule-notes"><p>排球考试时间 60 秒，垫球和发球均提供 11 个球。</p><p>乒乓球考试时间 90 秒，发球机前 35 秒发 30 个球，剩余时间考生发球，供球数量不限。</p><p>羽毛球考试时间 90 秒，发球机前 45 秒发 15 个球，剩余时间考生发球，供球数量不限。</p></div></section>
+      <section class="card rule-section"><div class="rule-title"><div><h2>运动能力 II 动作类评分</h2><p class="muted">体操、技巧、武术项目均为 6 分：动作质量 5 分 + 动作表现或演练水平 1 分。</p></div></div><div id="routine-rules" class="routine-grid"></div></section>
+      <details class="card rule-admin"><summary>课程选项、分值与学年管理</summary><div class="two-col"><section><p class="muted">以下内容用于学生档案的选项菜单，可按学校最终要求修改。</p><label>初中中考类项目<textarea id="junior-options"></textarea></label><label>高中选修项目<textarea id="senior-options"></textarea></label><button id="save-settings" class="primary">保存设置</button></section><section><div class="rule-grid"><label>现场总分<input id="site-max" type="number" min="0" max="100" /></label><label>过程性总分<input id="process-max" type="number" min="0" max="100" /></label><label>体育总分<input id="total-max" type="number" min="0" max="100" /></label></div><h3>学年管理</h3><p class="muted">初一→初二、初二→初三；初三学生转入毕业档案。高中学生仅升年级。</p><button class="secondary" id="promote-settings">执行学年升级</button></section></div></details>
     </section>
 
     <section class="view" id="publish">
-      <div class="two-col"><section class="card"><h2>手机查看版</h2><p class="muted">发布内容只包含姓名、年级、班级、选项、总评和教师评价；原始导入内容与备份不会上传。</p><label>查看密码<input id="publish-password" type="password" placeholder="至少 8 位；仅您自己保存" /></label><div class="actions"><button class="primary" id="make-view-data">生成加密查看文件</button></div><div id="publish-result" class="empty">生成后可下载 <code>viewer-data.enc</code>，并上传到 GitHub Pages 仓库。</div></section><section class="card"><h2>GitHub 免费发布步骤</h2><ol class="steps"><li>创建一个公开仓库，例如 <code>sports-view</code>。</li><li>上传本文件夹中的 <code>index.html</code>、<code>style.css</code>、<code>viewer.js</code>。</li><li>每次电脑端更新后，把新生成的 <code>viewer-data.enc</code> 覆盖上传。</li><li>在仓库 Settings → Pages 中开启网站；手机打开得到的网址后输入查看密码。</li></ol><p class="warn">公开仓库只能放网页代码和加密后的查看文件，不能上传本机备份、明文成绩表或密码。</p></section></div>
+      <div class="two-col"><section class="card"><h2>手机查看版</h2><p class="muted">发布内容包含概览、学生成绩与评价、考勤记录和课程规则；手机端仅能搜索和查看，不能修改档案。</p><label>查看密码<input id="publish-password" type="password" placeholder="至少 8 位；仅您自己保存" /></label><div class="actions"><button class="primary" id="make-view-data">生成加密查看文件</button></div><div id="publish-result" class="empty">生成后可下载 <code>viewer-data.enc</code>，并上传到 GitHub Pages 仓库。</div></section><section class="card"><h2>GitHub 免费发布步骤</h2><ol class="steps"><li>网页代码更新时上传 <code>index.html</code>、<code>style.css</code>、<code>viewer.css</code>、<code>rules.css</code>、<code>viewer.js</code> 和 <code>exam-rules.js</code>。</li><li>每次电脑端数据更新后，把新生成的 <code>viewer-data.enc</code> 覆盖上传。</li><li>手机刷新 GitHub Pages 网站并输入查看密码。</li></ol><p class="warn">公开仓库只能放网页代码和加密后的查看文件，不能上传本机备份、明文成绩表或密码。</p></section></div>
     </section>
   </main>
   <dialog id="student-dialog"><form id="student-form"><div class="dialog-head"><h2 id="dialog-title">新建学生</h2><button class="icon close-student-dialog" type="button" aria-label="关闭">×</button></div><input type="hidden" id="student-id" /><div class="form-grid"><label>姓名<input id="f-name" required /></label><label>年级<select id="f-grade"><option>初一</option><option>初二</option><option>初三</option><option>高一</option><option>高二</option><option>高三</option></select></label><label>班级<input id="f-class" placeholder="如：1班" required /></label><label>课程类型<select id="f-track"><option value="junior">初中中考体育</option><option value="senior">高中体育选修</option></select></label><label>当前选项<select id="f-event"></select></label><label>状态<select id="f-status"><option value="active">在校</option><option value="graduated">毕业</option></select></label></div><h3>本学期成绩</h3><div class="form-grid scores"><label>项目一得分（8）<input id="s1" type="number" min="0" max="8" step="0.1" /></label><label>项目二得分（8）<input id="s2" type="number" min="0" max="8" step="0.1" /></label><label>项目三得分（8）<input id="s3" type="number" min="0" max="8" step="0.1" /></label><label>项目四得分（6）<input id="s4" type="number" min="0" max="6" step="0.1" /></label><label>体测统测（10）<input id="p1" type="number" min="0" max="10" step="0.1" /></label><label>健康知识（10）<input id="p2" type="number" min="0" max="10" step="0.1" /></label></div><label>教师评价<textarea id="f-note" placeholder="可选填写"></textarea></label><div class="actions dialog-actions"><button class="ghost close-student-dialog" type="button">取消</button><button class="primary" id="save-student" type="submit">保存档案</button></div></form></dialog>
-  <script src="app.js?v=20260903-3"></script>
+  <script src="exam-rules.js?v=20260918-1"></script>
+  <script src="app.js?v=20260918-1"></script>
 </body>
 </html>

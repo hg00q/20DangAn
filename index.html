@@ -2,16 +2,30 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>体育档案查看</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>体育课程档案 · 只读查看</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="rules.css?v=20260918-1" />
+  <link rel="stylesheet" href="viewer.css?v=20260918-1" />
 </head>
-<body>
-  <main style="margin:0;max-width:960px">
-    <header><div><p class="eyebrow">只读查看</p><h1>体育课程档案</h1></div></header>
-    <section class="card" id="unlock"><h2>输入查看密码</h2><p class="muted">数据为加密查看快照，仅供教师本人使用。</p><input id="password" type="password" placeholder="查看密码" /><div class="actions"><button class="primary" id="unlock-btn">打开档案</button></div><p id="unlock-msg" class="muted"></p></section>
-    <section id="viewer" class="hidden"><div class="toolbar"><input id="q" placeholder="搜索姓名、班级或年级" /></div><div class="card table-card"><table><thead><tr><th>姓名</th><th>年级 / 班级</th><th>课程</th><th>项目</th><th>总评</th><th>评价</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<body class="viewer-body">
+  <main class="viewer-main">
+    <section class="unlock-card" id="unlock"><div class="viewer-brand"><span>体</span><div><p>只读查看</p><h1>体育课程档案</h1></div></div><p class="muted">输入发布时设置的密码，查看最新加密档案。</p><input id="password" type="password" placeholder="查看密码" autocomplete="current-password" /><button class="primary unlock-button" id="unlock-btn">打开档案</button><p id="unlock-msg" class="unlock-message"></p></section>
+
+    <section id="viewer" class="hidden">
+      <header class="viewer-header"><div><p class="eyebrow">教师只读版</p><h1>体育课程档案</h1><small id="snapshot-time" class="muted"></small></div></header>
+      <nav class="viewer-tabs"><button class="active" data-viewer-tab="overview">概览</button><button data-viewer-tab="students">学生档案</button><button data-viewer-tab="attendance">考勤记录</button><button data-viewer-tab="rules">课程与规则</button></nav>
+
+      <section class="viewer-panel active" id="viewer-overview"><div class="viewer-kpis"><article><span>在校学生</span><strong id="viewer-active">0</strong></article><article><span>已录入成绩</span><strong id="viewer-scored">0</strong></article><article><span>考勤低于 70%</span><strong id="viewer-alert">0</strong></article><article><span>已记录周次</span><strong id="viewer-weeks">0</strong></article></div><div class="card"><h2>近期档案</h2><div id="viewer-recent" class="viewer-list"></div></div></section>
+
+      <section class="viewer-panel" id="viewer-students"><div class="viewer-toolbar"><input id="viewer-search" placeholder="搜索姓名、班级或年级" /><select id="viewer-grade"></select><select id="viewer-class"></select></div><div id="viewer-student-list" class="student-readonly-list"></div></section>
+
+      <section class="viewer-panel" id="viewer-attendance"><div class="viewer-toolbar"><select id="viewer-week"></select><select id="viewer-attendance-grade"></select><select id="viewer-attendance-class"></select></div><div class="attendance-legend"><span>⭕ 旷课</span><span>× 未完成/迟到</span><span>✓ 已完成</span><span>空白不统计</span></div><div id="viewer-attendance-list" class="attendance-readonly-list"></div></section>
+
+      <section class="viewer-panel" id="viewer-rules"><div class="rule-summary"><article><span>体育总分</span><strong>50</strong><small>过程性 + 现场</small></article><article><span>过程性考核</span><strong>20</strong></article><article><span>现场考试</span><strong>30</strong><small>8 + 8 + 8 + 6</small></article><article><span>现场项目</span><strong>4</strong><small>1 必考 + 3 选考</small></article></div><section class="card rule-section"><h2>初三现场考试项目</h2><div id="viewer-category-grid" class="exam-category-grid"></div></section><section class="card rule-section"><h2>素质项目 I、II 评分表</h2><div class="score-table-wrap"><table class="score-table" id="viewer-quality-table"></table></div></section><section class="card rule-section"><h2>运动能力 I 及 100 米游泳评分表</h2><div class="score-table-wrap"><table class="score-table" id="viewer-ability-table"></table></div></section><section class="card rule-section"><h2>运动能力 II 动作类评分</h2><div id="viewer-routine-rules" class="routine-grid"></div></section></section>
+    </section>
   </main>
-  <script src="viewer.js"></script>
+  <script src="exam-rules.js?v=20260918-1"></script>
+  <script src="viewer.js?v=20260918-1"></script>
 </body>
 </html>
